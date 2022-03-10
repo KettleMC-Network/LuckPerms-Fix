@@ -4,6 +4,7 @@ import net.kettlemc.luckpermsfix.config.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.nio.file.Files;
 
 public class LuckPermsFix extends JavaPlugin {
 
@@ -19,10 +20,18 @@ public class LuckPermsFix extends JavaPlugin {
         for (String fileName : configuration.getFiles()) {
             File file = new File(fileName);
             if (file.exists()) {
-                file.delete();
+                if (file.isDirectory())
+                    deleteDirContent(file);
+                else
+                    file.delete();
                 this.getLogger().info("Deleted file '" + fileName + "'.");
             }
         }
     }
 
+    private static void deleteDirContent(File dir) {
+        for(File file : dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+    }
 }
